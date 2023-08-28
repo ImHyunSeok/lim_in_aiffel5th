@@ -76,10 +76,48 @@ class _PomodoroScreenState extends State<PomodoroScreen> {
   }
 
   void resumeTimer() {
-    if (isWorking || (workCount % 4 == 0)) {
-      startTimer();
+  if (isWorking || (workCount % 4 == 0)) {
+    if (timer == null || !timer!.isActive) {
+      if (remainingTime > 0) {
+        startTimerWithRemainingTime(); // 저장된 시간을 바탕으로 타이머 시작
+      } else {
+        startTimer(); // 저장된 시간이 없다면 일반적으로 타이머 시작
+      }
     }
   }
+}
+
+void startTimerWithRemainingTime() {
+  timer = Timer.periodic(Duration(seconds: 1), (timer) {
+    setState(() {
+      if (remainingTime > 0) {
+        remainingTime--;
+      } else {
+        timer.cancel();
+        handleTimerCompletion(); // 타이머가 완료되었을 때 처리 로직 호출
+      }
+    });
+  });
+}
+
+void handleTimerCompletion() {
+  if (isWorking) {
+    isWorking = false;
+    startTimer(); // 휴식 시간 시작
+  } else {
+    if (workCount % 4 == 0) {
+      isWorking = true;
+      remainingTime = workTime;
+    } else {
+      isWorking = true;
+      remainingTime = workTime;
+      workCount++;
+    }
+    startTimer(); // 작업 시간 시작
+  }
+}
+
+
 
   void toggleTimer() {
     if (timer != null && timer!.isActive) {
@@ -106,6 +144,7 @@ class _PomodoroScreenState extends State<PomodoroScreen> {
     pauseTimer();
 
     // 새로운 타이머 시작
+    remainingTime = isWorking ? workTime : (workCount % 4 == 0) ? longBreak : shortBreak;
     startTimer();
   }
 
