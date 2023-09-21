@@ -1,6 +1,6 @@
 # AIFFEL Campus Online 5th Code Peer Review Templete
-- 코더 : 전재영
-- 리뷰어 : 
+- 코더 : 임현석
+- 리뷰어 : 전재영
 
 # PRT(Peer Review Template)
 - [O]  **1. 주어진 문제를 해결하는 완성된 코드가 제출되었나요?**
